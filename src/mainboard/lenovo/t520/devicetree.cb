@@ -12,7 +12,7 @@ chip northbridge/intel/sandybridge
 	register "gpu_panel_power_backlight_off_delay" = "2100"	# T4: 210ms
 
 	device cpu_cluster 0 on
-		chip cpu/intel/socket_rPGA989
+		chip cpu/intel/socket_rPGA988B
 			device lapic 0 on end
 		end
 		chip cpu/intel/model_206ax
