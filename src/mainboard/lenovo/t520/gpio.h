@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef T530_GPIO_H
-#define T530_GPIO_H
+#ifndef T520_GPIO_H
+#define T520_GPIO_H
 
 #include "southbridge/intel/bd82x6x/gpio.h"
 
@@ -303,4 +303,4 @@ const struct pch_gpio_map t530_gpio_map = {
 		.level		= &pch_gpio_set3_level,
 	},
 };
-#endif /* T530_GPIO_H */
+#endif /* T520_GPIO_H */
