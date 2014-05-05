@@ -133,7 +133,7 @@ static int int15_handler(void)
 
 const char *smbios_mainboard_version(void)
 {
-	return "ThinkPad T520";
+	return "ThinkPad T420s";
 }
 
 /* Audio Setup */

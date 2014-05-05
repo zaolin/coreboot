@@ -180,7 +180,7 @@ void main(unsigned long bist)
 	pci_write_config32(PCH_LPC_DEV, GPIO_BASE, DEFAULT_GPIOBASE|1);
 	pci_write_config8(PCH_LPC_DEV, GPIO_CNTL, 0x10);
 
-	/* setup_pch_gpios(&t520_gpio_map); */
+	/* setup_pch_gpios(&t420s_gpio_map); */
 	outl(0x3962a5ff, DEFAULT_GPIOBASE);
 	outl(0x8ebf6aff, DEFAULT_GPIOBASE + 4);
 	outl(0x66957f3b, DEFAULT_GPIOBASE + 0xc);
