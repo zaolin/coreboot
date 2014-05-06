@@ -59,7 +59,7 @@ static void pch_enable_lpc(void)
 			   0x80010000);
 }
 
-static void rcba_config(void)
+static void rcba_config(void) // Root Complex Base Address Register
 {
 	/*
 	 *             GFX    INTA -> PIRQA (MSI)
@@ -180,19 +180,21 @@ void main(unsigned long bist)
 	pci_write_config32(PCH_LPC_DEV, GPIO_BASE, DEFAULT_GPIOBASE | 1);
 	pci_write_config8(PCH_LPC_DEV, GPIO_CNTL, 0x10);
 
+	// inteltool -g, copy data from the responding addrs
 	/* setup_pch_gpios(&t420s_gpio_map); */
-	outl(0x3962a5ff, DEFAULT_GPIOBASE);
-	outl(0x86bf6aff, DEFAULT_GPIOBASE + 4);
-	outl(0xecdb7fbb, DEFAULT_GPIOBASE + 0xc);
-	outl(0x00080000, DEFAULT_GPIOBASE + 0x20);
-	outl(0x00002003, DEFAULT_GPIOBASE + 0x2c);
-	outl(0x02ff04fe, DEFAULT_GPIOBASE + 0x30);
-	outl(0x1f47fbf5, DEFAULT_GPIOBASE + 0x34);
-	outl(0xbdbf5f47, DEFAULT_GPIOBASE + 0x38);
-	outl(0x000000f0, DEFAULT_GPIOBASE + 0x40);
-	outl(0x00000ff0, DEFAULT_GPIOBASE + 0x44);
-	outl(0x00000f8f, DEFAULT_GPIOBASE + 0x48);
-	outl(0x01000000, DEFAULT_GPIOBASE + 0x60);
+	outl(0x3962a5ff, DEFAULT_GPIOBASE);		// GPIO_USE_SEL
+	outl(0x86bf6aff, DEFAULT_GPIOBASE + 4);		// GP_IO_SEL
+	outl(0xecdb7fbb, DEFAULT_GPIOBASE + 0xc);	// GP_LVL
+//	gpiobase+0x0018: 0x00000000 (GPO_BLINK) XXX
+	outl(0x00080000, DEFAULT_GPIOBASE + 0x20);	// GP_SB_CMDSTS
+	outl(0x00002003, DEFAULT_GPIOBASE + 0x2c);	// GPI_INV
+	outl(0x02ff04fe, DEFAULT_GPIOBASE + 0x30);	// GPIO_USE_SEL2
+	outl(0x1f47fbf5, DEFAULT_GPIOBASE + 0x34);	// GP_IO_SEL2
+	outl(0xbdbf5f47, DEFAULT_GPIOBASE + 0x38);	// GP_LVL2
+	outl(0x000000f0, DEFAULT_GPIOBASE + 0x40);	// GPIO_USE_SEL3
+	outl(0x00000ff0, DEFAULT_GPIOBASE + 0x44);	// GPIO_SEL3
+	outl(0x00000f8f, DEFAULT_GPIOBASE + 0x48);	// GPIO_LVL3
+	outl(0x01000000, DEFAULT_GPIOBASE + 0x60);	// GP_RST_SEL1
 
 	/* Initialize console device(s) */
 	console_init();
