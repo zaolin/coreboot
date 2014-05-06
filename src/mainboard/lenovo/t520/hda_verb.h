@@ -27,8 +27,8 @@
 
 static const u32 mainboard_cim_verb_data[] = {
 	/* coreboot specific header */
-  	0x10ec0269,	// Codec Vendor / Device ID: Realtek ALC269VC
-  	0x17aa21fa,	// Subsystem ID
+	0x10ec0269,	// Codec Vendor / Device ID: Realtek ALC269VC
+	0x17aa21fa,	// Subsystem ID
 	0x0000007d,	// Number of 4 dword sets
 
 /* Bits 31:28 - Codec Address */
@@ -312,6 +312,6 @@ static const u32 mainboard_pc_beep_verbs[] = {
 };
 
 static const u32 mainboard_pc_beep_verbs_size =
-	sizeof(mainboard_pc_beep_verbs) / sizeof(mainboard_pc_beep_verbs[0]);
+	ARRAY_SIZE(mainboard_pc_beep_verbs);
 
 

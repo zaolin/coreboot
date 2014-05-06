@@ -27,7 +27,6 @@
 #include <pc80/mc146818rtc.h>
 #include <ec/lenovo/h8/h8.h>
 #include <delay.h>
-#include "smi.h"
 #include <southbridge/intel/bd82x6x/nvs.h>
 #include <southbridge/intel/bd82x6x/pch.h>
 #include <southbridge/intel/bd82x6x/me.h>
@@ -55,14 +54,9 @@ int mainboard_io_trap_handler(int smif)
 		smm_initialized = 1;
 	}
 
-	switch (smif) {
-	default:
-		return 0;
-	}
-
 	/* On success, the IO Trap Handler returns 1
 	 * On failure, the IO Trap Handler returns a value != 1 */
-	return 1;
+	return 0;
 }
 
 static void mainboard_smi_brightness_up(void)
@@ -79,7 +73,7 @@ static void mainboard_smi_brightness_down(void)
 
 	if ((value = pci_read_config8(PCI_DEV(0, 2, 1), 0xf4)) > 0x10)
 		pci_write_config8(PCI_DEV(0, 2, 1), 0xf4,
-				  (value - 0x10) & 0xf0);
+		(value - 0x10) & 0xf0);
 }
 
 static void mainboard_smi_handle_ec_sci(void)

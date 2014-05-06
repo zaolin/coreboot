@@ -31,19 +31,18 @@
 #include <pc80/mc146818rtc.h>
 #include <cbmem.h>
 #include <console/console.h>
-#include "northbridge/intel/sandybridge/sandybridge.h"
-#include "northbridge/intel/sandybridge/raminit.h"
-#include "southbridge/intel/bd82x6x/pch.h"
-#include "southbridge/intel/bd82x6x/gpio.h"
+#include <northbridge/intel/sandybridge/sandybridge.h>
+#include <northbridge/intel/sandybridge/raminit.h>
+#include <southbridge/intel/bd82x6x/pch.h>
+#include <southbridge/intel/bd82x6x/gpio.h>
 #include <arch/cpu.h>
 #include <cpu/x86/bist.h>
 #include <cpu/x86/msr.h>
-#include "gpio.h"
 #include <cbfs.h>
 
 static void pch_enable_lpc(void)
 {
-	/* X230 EC Decode Range Port60/64, Port62/66 */
+	/* T520 EC Decode Range Port60/64, Port62/66 */
 	/* Enable EC, PS/2 Keyboard/Mouse */
 	pci_write_config16(PCH_LPC_DEV, LPC_EN,
 			   CNF2_LPC_EN | CNF1_LPC_EN | MC_LPC_EN | KBC_LPC_EN |
@@ -152,13 +151,13 @@ void main(unsigned long bist)
 			 /* enabled   usb oc pin    length */
 			{ 1, 0, 0x0080 }, /* P0 (left, fan side), OC 0 */
 			{ 1, 1, 0x0080 }, /* P1 (left touchpad side), OC 1 */
-			{ 1, 3, 0x0080 }, /* P2: dock, OC 3 */
+			{ 1, 0, 0x0040 }, /* P2: dock, OC 3 */
 			{ 1, 0, 0x0040 }, /* P3: wwan, no OC */
-			{ 1, 0, 0x0000 }, /* P4: Wacom tablet on X230t, otherwise empty */
+			{ 1, 0, 0x0080 }, /* P4: Wacom tablet on X230t, otherwise empty */
 			{ 1, 0, 0x0080 }, /* P5: Expresscard, no OC */
 			{ 0, 0, 0x0000 }, /* P6: Empty */
 			{ 1, 0, 0x0080 }, /* P7: dock, no OC */
-			{ 0, 0, 0x0000 }, /* P8: Empty */
+			{ 1, 4, 0x0080 }, /* P8: Empty */
 			{ 1, 5, 0x0080 }, /* P9: Right (EHCI debug), OC 5 */
 			{ 1, 0, 0x0040 }, /* P10: fingerprint reader, no OC */
 			{ 1, 0, 0x0040 }, /* P11: bluetooth, no OC. */
@@ -180,7 +179,6 @@ void main(unsigned long bist)
 	pci_write_config32(PCH_LPC_DEV, GPIO_BASE, DEFAULT_GPIOBASE|1);
 	pci_write_config8(PCH_LPC_DEV, GPIO_CNTL, 0x10);
 
-	/* setup_pch_gpios(&t520_gpio_map); */
 	outl(0x3962a5ff, DEFAULT_GPIOBASE);
 	outl(0x8ebf6aff, DEFAULT_GPIOBASE + 4);
 	outl(0x66957f3b, DEFAULT_GPIOBASE + 0xc);
@@ -234,26 +232,24 @@ void main(unsigned long bist)
 		enable_usb_bar();
 
 	post_code(0x39);
-
 	post_code(0x3a);
+
 	pei_data.boot_mode = boot_mode;
 	timestamp_add_now(TS_BEFORE_INITRAM);
 
 	/* MRC.bin has a bug and sometimes halts (instead of reboot?).
 	 */
-	if (boot_mode != 2)
-	  {
-		  RCBA32(GCS) = RCBA32(GCS) & ~(1 << 5);	/* reset */
-		  outw((0 << 11), DEFAULT_PMBASE | 0x60 | 0x08);	/* let timer go */
-	  }
+	if (boot_mode != 2) {
+		RCBA32(GCS) = RCBA32(GCS) & ~(1 << 5);	/* reset */
+		outw((0 << 11), DEFAULT_PMBASE | 0x60 | 0x08);	/* let timer go */
+	}
 
 	sdram_initialize(&pei_data);
 
-	if (boot_mode != 2)
-	  {
-		  RCBA32(GCS) = RCBA32(GCS) | (1 << 5);	/* No reset */
-		  outw((1 << 11), DEFAULT_PMBASE | 0x60 | 0x08);	/* halt timer */
-	  }
+	if (boot_mode != 2) {
+		RCBA32(GCS) = RCBA32(GCS) | (1 << 5);	/* No reset */
+		outw((1 << 11), DEFAULT_PMBASE | 0x60 | 0x08);	/* halt timer */
+	}
 
 	timestamp_add_now(TS_AFTER_INITRAM);
 	post_code(0x3c);
@@ -265,9 +261,10 @@ void main(unsigned long bist)
 	post_code(0x3e);
 
 	MCHBAR16(SSKPD) = 0xCAFE;
-	cbmem_was_initted = !cbmem_recovery(boot_mode==2);
-	if (boot_mode!=2)
+	cbmem_was_initted = !cbmem_recovery(boot_mode == 2);
+	if (boot_mode != 2) {
 		save_mrc_data(&pei_data);
+	}
 
 #if CONFIG_HAVE_ACPI_RESUME
 	/* If there is no high memory area, we didn't boot before, so
