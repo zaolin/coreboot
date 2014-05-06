@@ -150,20 +150,20 @@ void main(unsigned long bist)
 		.max_ddr3_freq = 1600,
 		.usb_port_config = {
 			 /* enabled   usb oc pin    length */
-			{ 1, 0, 0x0080 }, /* P0 (left, fan side), OC 0 */
-			{ 1, 1, 0x0080 }, /* P1 (left touchpad side), OC 1 */
-			{ 1, 3, 0x0080 }, /* P2: dock, OC 3 */
-			{ 1, 0, 0x0040 }, /* P3: wwan, no OC */
-			{ 1, 0, 0x0000 }, /* P4: Wacom tablet on X230t, otherwise empty */
+			{ 0, 0, 0x0000 }, /* P0 RESERVED */
+			{ 1, 1, 0x0080 }, /* P1 SYSTEM PORT 2 (To system port) OC 1*/
+			{ 1, 0, 0x0080 }, /* P2: HALF MINICARD (WLAN) no oc*/
+			{ 1, 0, 0x0080 }, /* P3: WWAN, no OC */
+			{ 1, 0, 0x0040 }, /* P4: SMART CARD SLOT */
 			{ 1, 0, 0x0080 }, /* P5: Expresscard, no OC */
-			{ 0, 0, 0x0000 }, /* P6: Empty */
-			{ 1, 0, 0x0080 }, /* P7: dock, no OC */
-			{ 0, 0, 0x0000 }, /* P8: Empty */
-			{ 1, 5, 0x0080 }, /* P9: Right (EHCI debug), OC 5 */
+			{ 0, 0, 0x0000 }, /* P6: RESERVED */
+			{ 0, 0, 0x0000 }, /* P7: RESERVED */
+			{ 0, 0, 0x0000 }, /* P8: TOUCH PANEL ? */
+			{ 1, 5, 0x0080 }, /* P9: SYSTEM PORT 1 (To USBAO), OC 5 */
 			{ 1, 0, 0x0040 }, /* P10: fingerprint reader, no OC */
-			{ 1, 0, 0x0040 }, /* P11: bluetooth, no OC. */
-			{ 1, 0, 0x0040 }, /* P12: wlan, no OC */
-			{ 1, 0, 0x0080 }, /* P13: webcam, no OC */
+			{ 1, 0, 0x0040 }, /* P11: BLUETOOTH, no OC. */
+			{ 1, 0, 0x0080 }, /* P12: DOCKING, no OC */
+			{ 1, 0, 0x0080 }, /* P13: USB CAMERA (LCD), no OC */
 		},
 		.ddr_refresh_rate_config = 2, /* Force double refresh rate */
 	};
