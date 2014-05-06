@@ -177,7 +177,7 @@ void main(unsigned long bist)
 	pch_enable_lpc();
 
 	/* Enable GPIOs */
-	pci_write_config32(PCH_LPC_DEV, GPIO_BASE, DEFAULT_GPIOBASE|1);
+	pci_write_config32(PCH_LPC_DEV, GPIO_BASE, DEFAULT_GPIOBASE | 1);
 	pci_write_config8(PCH_LPC_DEV, GPIO_CNTL, 0x10);
 
 	/* setup_pch_gpios(&t420s_gpio_map); */
@@ -241,19 +241,17 @@ void main(unsigned long bist)
 
 	/* MRC.bin has a bug and sometimes halts (instead of reboot?).
 	 */
-	if (boot_mode != 2)
-	  {
+	if (boot_mode != 2) {
 		  RCBA32(GCS) = RCBA32(GCS) & ~(1 << 5);	/* reset */
 		  outw((0 << 11), DEFAULT_PMBASE | 0x60 | 0x08);	/* let timer go */
-	  }
+	}
 
 	sdram_initialize(&pei_data);
 
-	if (boot_mode != 2)
-	  {
+	if (boot_mode != 2) {
 		  RCBA32(GCS) = RCBA32(GCS) | (1 << 5);	/* No reset */
 		  outw((1 << 11), DEFAULT_PMBASE | 0x60 | 0x08);	/* halt timer */
-	  }
+	}
 
 	timestamp_add_now(TS_AFTER_INITRAM);
 	post_code(0x3c);
@@ -265,8 +263,8 @@ void main(unsigned long bist)
 	post_code(0x3e);
 
 	MCHBAR16(SSKPD) = 0xCAFE;
-	cbmem_was_initted = !cbmem_recovery(boot_mode==2);
-	if (boot_mode!=2)
+	cbmem_was_initted = !cbmem_recovery(boot_mode == 2);
+	if (boot_mode != 2)
 		save_mrc_data(&pei_data);
 
 #if CONFIG_HAVE_ACPI_RESUME
