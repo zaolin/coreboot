@@ -182,16 +182,16 @@ void main(unsigned long bist)
 
 	/* setup_pch_gpios(&t420s_gpio_map); */
 	outl(0x3962a5ff, DEFAULT_GPIOBASE);
-	outl(0x8ebf6aff, DEFAULT_GPIOBASE + 4);
-	outl(0x66957f3b, DEFAULT_GPIOBASE + 0xc);
+	outl(0x86bf6aff, DEFAULT_GPIOBASE + 4);
+	outl(0xecdb7fbb, DEFAULT_GPIOBASE + 0xc);
 	outl(0x00080000, DEFAULT_GPIOBASE + 0x20);
-	outl(0x00002082, DEFAULT_GPIOBASE + 0x2c);
-	outl(0x02ff06de, DEFAULT_GPIOBASE + 0x30);
-	outl(0x1f47f9f5, DEFAULT_GPIOBASE + 0x34);
-	outl(0xbdbffd47, DEFAULT_GPIOBASE + 0x38);
+	outl(0x00002003, DEFAULT_GPIOBASE + 0x2c);
+	outl(0x02ff04fe, DEFAULT_GPIOBASE + 0x30);
+	outl(0x1f47fbf5, DEFAULT_GPIOBASE + 0x34);
+	outl(0xbdbf5f47, DEFAULT_GPIOBASE + 0x38);
 	outl(0x000000f0, DEFAULT_GPIOBASE + 0x40);
 	outl(0x00000ff0, DEFAULT_GPIOBASE + 0x44);
-	outl(0x00000f4f, DEFAULT_GPIOBASE + 0x48);
+	outl(0x00000f8f, DEFAULT_GPIOBASE + 0x48);
 	outl(0x01000000, DEFAULT_GPIOBASE + 0x60);
 
 	/* Initialize console device(s) */
