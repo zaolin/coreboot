@@ -55,8 +55,7 @@ static void pch_enable_lpc(void)
 
 	pci_write_config16(PCH_LPC_DEV, LPC_IO_DEC, 0x10);
 
-	pci_write_config32(PCH_LPC_DEV, 0xac,
-			   0x80010000);
+	pci_write_config32(PCH_LPC_DEV, 0xac, 0x80010000);
 }
 
 static void rcba_config(void) // Root Complex Base Address Register
