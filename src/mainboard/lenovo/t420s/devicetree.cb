@@ -66,16 +66,16 @@ chip northbridge/intel/sandybridge
 			# Enable zero-based linear PCIe root port functions
 			register "pcie_port_coalesce" = "1"
 
-			device pci 16.0 on end # Management Engine Interface 1
-			device pci 19.0 on end # Intel Gigabit Ethernet
-			device pci 1a.0 on end # USB2 EHCI #2
-			device pci 1b.0 on end # High Definition Audio
+			device pci 16.0 on end # Intel Corporation 6 Series/C200 Series Chipset Family MEI Controller #1
+			device pci 19.0 on end # Intel Corporation 82579LM Gigabit Network Connection
+			device pci 1a.0 on end # Intel Corporation 6 Series/C200 Series Chipset Family USB Enhanced Host Controller #2
+			device pci 1b.0 on end # Intel Corporation 6 Series/C200 Series Chipset Family High Definition Audio Controller
 			device pci 1c.0 on end # PCIe Port #1
 			device pci 1c.1 on end # PCIe Port #2 Integrated Wireless LAN
 			device pci 1c.3 on end # PCIe Port #3 Express Card
 			device pci 1c.4 on end # PCIe Port #4 MMC/SDXC + IEEE1394
-			device pci 1d.0 on end # USB2 EHCI #1
-			device pci 1f.0 on #LPC bridge
+			device pci 1d.0 on end # Intel Corporation 6 Series/C200 Series Chipset Family USB Enhanced Host Controller #1
+			device pci 1f.0 on #Intel Corporation QM67 Express Chipset Family LPC Controller
 				chip ec/lenovo/pmh7
 					device pnp ff.1 on # dummy
 					end
@@ -116,8 +116,8 @@ chip northbridge/intel/sandybridge
 					register "evente_enable" = "0x0d"
 				end
 			end # LPC bridge
-			device pci 1f.2 on end # SATA Controller 1
-			device pci 1f.3 on # SMBUS controller
+			device pci 1f.2 on end # Intel Corporation 6 Series/C200 Series Chipset Family 6 port SATA AHCI Controller
+			device pci 1f.3 on # Intel Corporation 6 Series/C200 Series Chipset Family SMBus Controller
 			        # eeprom, 8 virtual devices, same chip
 				chip drivers/i2c/at24rf08c
 					device i2c 54 on end
