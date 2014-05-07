@@ -54,8 +54,8 @@ chip northbridge/intel/sandybridge
 			register "gpi1_routing" = "2"
 			register "gpi8_routing" = "2"
 
-			# Enable SATA ports 0 (HDD bay) & 1 (dock) & 2 (msata)
-			register "sata_port_map" = "0x7"
+			# Enable SATA ports 0 (HDD bay) & 1 (ODD bay) & 2 (msata) & 4 (dock)
+			register "sata_port_map" = "0x17"
 			# Set max SATA speed to 6.0 Gb/s
 			register "sata_interface_speed_support" = "0x3"
 
@@ -65,7 +65,8 @@ chip northbridge/intel/sandybridge
 
 			# Enable zero-based linear PCIe root port functions
 			register "pcie_port_coalesce" = "1"
-
+			device pci 01.0 off end # NVIDIA Corporation GF119M [NVS 4200M]
+			device pci 02.0 on end # Intel Corporation 2nd Generation Core Processor Family Integrated Graphics Controller
 			device pci 16.0 on end # Intel Corporation 6 Series/C200 Series Chipset Family MEI Controller #1
 			device pci 19.0 on end # Intel Corporation 82579LM Gigabit Network Connection
 			device pci 1a.0 on end # Intel Corporation 6 Series/C200 Series Chipset Family USB Enhanced Host Controller #2
@@ -73,7 +74,7 @@ chip northbridge/intel/sandybridge
 			device pci 1c.0 on end # PCIe Port #1
 			device pci 1c.1 on end # PCIe Port #2 Integrated Wireless LAN
 			device pci 1c.3 on end # PCIe Port #3 Express Card
-			device pci 1c.4 on end # PCIe Port #4 MMC/SDXC + IEEE1394
+			device pci 1c.4 on end # PCIe Port #4 NEC Corporation uPD720200A USB 3.0 Host Controller
 			device pci 1d.0 on end # Intel Corporation 6 Series/C200 Series Chipset Family USB Enhanced Host Controller #1
 			device pci 1f.0 on #Intel Corporation QM67 Express Chipset Family LPC Controller
 				chip ec/lenovo/pmh7
@@ -96,7 +97,7 @@ chip northbridge/intel/sandybridge
 					register "config2" = "0xa0"
 					register "config3" = "0xc2"
 
-					register "has_keyboard_backlight" = "1"
+					register "has_keyboard_backlight" = "0"
 
 					register "beepmask0" = "0x00"
 					register "beepmask1" = "0x86"
