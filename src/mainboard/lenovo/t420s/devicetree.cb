@@ -34,7 +34,8 @@ chip northbridge/intel/sandybridge
 
 	device domain 0 on
 		device pci 00.0 on end # host bridge
-		device pci 02.0 on end # vga controller
+		device pci 01.0 off end # NVIDIA Corporation GF119M [NVS 4200M]
+		device pci 02.0 on end # Intel Corporation 2nd Generation Core Processor Family Integrated Graphics Controller
 
 		chip southbridge/intel/bd82x6x # Intel Series 6 Cougar Point PCH
 			register "pirqa_routing" = "0x8b"
@@ -65,8 +66,7 @@ chip northbridge/intel/sandybridge
 
 			# Enable zero-based linear PCIe root port functions
 			register "pcie_port_coalesce" = "1"
-			device pci 01.0 off end # NVIDIA Corporation GF119M [NVS 4200M]
-			device pci 02.0 on end # Intel Corporation 2nd Generation Core Processor Family Integrated Graphics Controller
+
 			device pci 16.0 on end # Intel Corporation 6 Series/C200 Series Chipset Family MEI Controller #1
 			device pci 19.0 on end # Intel Corporation 82579LM Gigabit Network Connection
 			device pci 1a.0 on end # Intel Corporation 6 Series/C200 Series Chipset Family USB Enhanced Host Controller #2
