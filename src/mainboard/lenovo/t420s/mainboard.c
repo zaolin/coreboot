@@ -158,10 +158,7 @@ static void mainboard_init(device_t dev)
 	RCBA32(0x38c4) = 0x00802005;
 	RCBA32(0x38c0) = 0x00000007;
 
-	/* This sneaked in here, because X201 SuperIO chip isn't really
-	   connected to anything and hence we don't init it.
-	 */
-	pc_keyboard_init(0);
+	pc_keyboard_init();
 
 	/* Enable expresscard hotplug events.  */
 	pci_write_config32(dev_find_slot(0, PCI_DEVFN(0x1c, 2)),
@@ -172,9 +169,7 @@ static void mainboard_init(device_t dev)
 			   0x42, 0x142);
 }
 
-// mainboard_enable is executed as first thing after
-// enumerate_buses().
-
+// mainboard_enable is executed as first thing after enumerate_buses().
 static void mainboard_enable(device_t dev)
 {
 	dev->ops->init = mainboard_init;

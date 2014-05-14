@@ -31,19 +31,18 @@
 #include <pc80/mc146818rtc.h>
 #include <cbmem.h>
 #include <console/console.h>
-#include "northbridge/intel/sandybridge/sandybridge.h"
-#include "northbridge/intel/sandybridge/raminit.h"
-#include "southbridge/intel/bd82x6x/pch.h"
-#include "southbridge/intel/bd82x6x/gpio.h"
+#include <northbridge/intel/sandybridge/sandybridge.h>
+#include <northbridge/intel/sandybridge/raminit.h>
+#include <southbridge/intel/bd82x6x/pch.h>
+#include <southbridge/intel/bd82x6x/gpio.h>
 #include <arch/cpu.h>
 #include <cpu/x86/bist.h>
 #include <cpu/x86/msr.h>
-#include "gpio.h"
 #include <cbfs.h>
 
 static void pch_enable_lpc(void)
 {
-	/* X230 EC Decode Range Port60/64, Port62/66 */
+	/* T420s EC Decode Range Port60/64, Port62/66 */
 	/* Enable EC, PS/2 Keyboard/Mouse */
 	pci_write_config16(PCH_LPC_DEV, LPC_EN,
 			   CNF2_LPC_EN | CNF1_LPC_EN | MC_LPC_EN | KBC_LPC_EN |
@@ -237,21 +236,22 @@ void main(unsigned long bist)
 	post_code(0x39);
 
 	post_code(0x3a);
+
 	pei_data.boot_mode = boot_mode;
 	timestamp_add_now(TS_BEFORE_INITRAM);
 
 	/* MRC.bin has a bug and sometimes halts (instead of reboot?).
 	 */
 	if (boot_mode != 2) {
-		  RCBA32(GCS) = RCBA32(GCS) & ~(1 << 5);	/* reset */
-		  outw((0 << 11), DEFAULT_PMBASE | 0x60 | 0x08);	/* let timer go */
+		RCBA32(GCS) = RCBA32(GCS) & ~(1 << 5);	/* reset */
+		outw((0 << 11), DEFAULT_PMBASE | 0x60 | 0x08);	/* let timer go */
 	}
 
 	sdram_initialize(&pei_data);
 
 	if (boot_mode != 2) {
-		  RCBA32(GCS) = RCBA32(GCS) | (1 << 5);	/* No reset */
-		  outw((1 << 11), DEFAULT_PMBASE | 0x60 | 0x08);	/* halt timer */
+		RCBA32(GCS) = RCBA32(GCS) | (1 << 5);	/* No reset */
+		outw((1 << 11), DEFAULT_PMBASE | 0x60 | 0x08);	/* halt timer */
 	}
 
 	timestamp_add_now(TS_AFTER_INITRAM);

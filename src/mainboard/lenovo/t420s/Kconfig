@@ -21,8 +21,8 @@ config BOARD_SPECIFIC_OPTIONS # dummy
 	select SERIRQ_CONTINUOUS_MODE
 
 config HAVE_MRC_CACHE
-       	bool
-       	default n
+	bool
+	default n
 
 config HAVE_IFD_BIN
 	bool
@@ -57,8 +57,8 @@ config MAX_CPUS
 	default 8
 
 config USBDEBUG_HCD_INDEX
-       	int
-       	default 2
+	int
+	default 2
 
 config DRAM_GATE_GPIO
 	int
@@ -80,4 +80,4 @@ config MAINBOARD_VENDOR
 	string
 	default "LENOVO"
 
-endif # BOARD_LENOVO_T420
+endif # BOARD_LENOVO_T420s
