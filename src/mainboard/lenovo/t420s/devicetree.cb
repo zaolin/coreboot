@@ -119,7 +119,7 @@ chip northbridge/intel/sandybridge
 			end # LPC bridge
 			device pci 1f.2 on end # Intel Corporation 6 Series/C200 Series Chipset Family 6 port SATA AHCI Controller
 			device pci 1f.3 on # Intel Corporation 6 Series/C200 Series Chipset Family SMBus Controller
-			        # eeprom, 8 virtual devices, same chip
+				# eeprom, 8 virtual devices, same chip
 				chip drivers/i2c/at24rf08c
 					device i2c 54 on end
 					device i2c 55 on end
