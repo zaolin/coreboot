@@ -39,7 +39,7 @@
 
 static const u32 mainboard_cim_verb_data[] = {
 	/* coreboot specific header */
-  	0x14f1506e,	// Codec Vendor / Device ID: Conexant CX20590 / Datasheet says CX20672
+  	0x14f1506e,	// Codec Vendor / Device ID: Conexant CX20590 / Schematic says CX20672
   	0x17aa21d2,	// Subsystem ID
 	0x0000000a,	// Number of 4 dword sets
 
