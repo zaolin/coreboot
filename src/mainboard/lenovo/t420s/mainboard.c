@@ -39,6 +39,7 @@
 #include <device/pci.h>
 #include <cbfs.h>
 #include <pc80/keyboard.h>
+#include <build.h>
 
 void mainboard_suspend_resume(void)
 {
@@ -131,6 +132,15 @@ static int int15_handler(void)
 }
 #endif
 
+const char *smbios_mainboard_bios_version(void)
+	{
+		/* Satisfy thinkpad_acpi. */
+	if (strlen(CONFIG_LOCALVERSION))
+		return "CBET4000 " CONFIG_LOCALVERSION;
+	else
+		return "CBET4000 " COREBOOT_VERSION;
+}
+
 const char *smbios_mainboard_version(void)
 {
 	return "ThinkPad T420s";
@@ -154,6 +164,7 @@ static void verb_setup(void)
 
 static void mainboard_init(device_t dev)
 {
+	/* init spi */
 	RCBA32(0x38c8) = 0x00002005;
 	RCBA32(0x38c4) = 0x00802005;
 	RCBA32(0x38c0) = 0x00000007;
