@@ -18,10 +18,3 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
  * MA 02110-1301 USA
  */
-
-#include <ec/lenovo/h8/acpi/ec.asl>
-
-Scope(\_SB.PCI0.LPCB.EC)
-{
-}
-
