@@ -54,6 +54,7 @@ PHONY+= clean-abuild coreboot lint lint-stable build-dirs
 # root source directories of coreboot
 subdirs-y := src/lib src/console src/device src/ec src/southbridge src/soc
 subdirs-y += src/northbridge src/superio src/drivers src/cpu src/vendorcode
+subdirs-y += src/security
 subdirs-y += util/cbfstool util/sconfig util/nvramtool
 subdirs-y += src/arch/arm src/arch/arm64 src/arch/mips src/arch/riscv
 subdirs-y += src/arch/x86
@@ -599,6 +600,9 @@ ifeq ($(CONFIG_CPU_MICROCODE_ADDED_DURING_BUILD),y)
 	@printf "    UPDATE-FIT \n"
 	$(CBFSTOOL) $@.tmp update-fit -n cpu_microcode_blob.bin -x $(CONFIG_CPU_INTEL_NUM_FIT_ENTRIES)
 endif
+endif
+ifeq ($(CONFIG_UPDATE),y)
+	$(CBFSTOOL) $@.tmp sign -k $(CONFIG_UPDATE_KEY_PATH)
 endif
 	mv $@.tmp $@
 	@printf "    CBFSPRINT  $(subst $(obj)/,,$(@))\n\n"

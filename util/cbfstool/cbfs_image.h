@@ -57,6 +57,11 @@ int cbfs_image_from_file(struct cbfs_image *image, const char *filename);
 /* Writes a CBFS image into file. Returns 0 on success, otherwise non-zero. */
 int cbfs_image_write_file(struct cbfs_image *image, const char *filename);
 
+/* Sign a CBFS image file. Returns 0 on success, otherwise non-zero. */
+int cbfs_image_sign_file(struct cbfs_image *image,
+						 const unsigned char *sk,
+						 const char *filename);
+
 /* Releases the CBFS image. Returns 0 on success, otherwise non-zero. */
 int cbfs_image_delete(struct cbfs_image *image);
 

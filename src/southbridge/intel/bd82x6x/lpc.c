@@ -39,6 +39,8 @@
 #include "pch.h"
 #include "nvs.h"
 #include <southbridge/intel/common/pciehp.h>
+#include <security/flash.h>
+#include <security/platform.h>
 
 #define NMI_OFF	0
 
@@ -480,16 +482,6 @@ static void pch_lock_smm(struct device *dev)
 }
 #endif
 
-static void pch_disable_smm_only_flashing(struct device *dev)
-{
-	u8 reg8;
-
-	printk(BIOS_SPEW, "Enabling BIOS updates outside of SMM... ");
-	reg8 = pci_read_config8(dev, 0xdc);	/* BIOS_CNTL */
-	reg8 &= ~(1 << 5);
-	pci_write_config8(dev, 0xdc, reg8);
-}
-
 static void pch_fixups(struct device *dev)
 {
 	u8 gen_pmcon_2;
@@ -570,7 +562,12 @@ static void lpc_init(struct device *dev)
 	/* Interrupt 9 should be level triggered (SCI) */
 	i8259_configure_irq_trigger(9, 1);
 
-	pch_disable_smm_only_flashing(dev);
+	//pch_disable_smm_only_flashing(dev);
+
+#if CONFIG_PLATFORM_LOCK
+	spi_lock(dev);
+	platform_lock();
+#endif
 
 #if CONFIG_HAVE_SMI_HANDLER
 	pch_lock_smm(dev);

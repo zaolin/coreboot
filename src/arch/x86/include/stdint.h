@@ -1,6 +1,8 @@
 #ifndef I386_STDINT_H
 #define I386_STDINT_H
 
+#define BITS_PER_LONG 32
+
 #if defined(__GNUC__)
 #define __HAVE_LONG_LONG__ 1
 #else
@@ -76,8 +78,8 @@ typedef int16_t s16;
 typedef int32_t s32;
 
 typedef uint8_t bool;
-#define true	1
-#define false	0
+#define true    1
+#define false   0
 
 #ifndef UINT32_MAX
 #define UINT32_MAX (4294967295U)

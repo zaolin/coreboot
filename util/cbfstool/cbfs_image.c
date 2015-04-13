@@ -22,9 +22,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stddef.h>
 
 #include "common.h"
 #include "cbfs_image.h"
+#include "crypto.h"
 
 /* The file name align is not defined in CBFS spec -- only a preference by
  * (old) cbfstool. */
@@ -121,9 +123,51 @@ static int cbfs_fix_legacy_size(struct cbfs_image *image, char *hdr_loc)
 	return 0;
 }
 
+static int cbfs_gen_signature(const struct cbfs_image *image,
+							  const unsigned char *sk) {
+	struct buffer outheader;
+	unsigned long long sig_len = 0;
+	void *sig_loc = NULL;
+	unsigned char sig[CBFS_MAX_SIG_LENGTH];
+	unsigned char digest[crypto_hash_BYTES];
+
+	sig_loc = cbfs_find_header(image->buffer.data, image->buffer.size);
+	sig_loc += offsetof(struct cbfs_header, signaturesize);
+
+	outheader.data = sig_loc;
+	outheader.size = 0;
+
+	memset(sig, 0, CBFS_MAX_SIG_LENGTH);
+
+	xdr_be.put32(&outheader, 0);
+	bputs(&outheader, sig, CBFS_MAX_SIG_LENGTH);
+
+	if( crypto_hash(digest,
+					(unsigned char*)image->buffer.data,
+					image->buffer.size) != 0 ) {
+		return -2;
+	}
+
+	if( crypto_sign(sig, &sig_len, digest,
+		        crypto_hash_BYTES, sk) != 0 ) {
+		return -3;
+	}
+
+	outheader.data = sig_loc;
+	outheader.size = 0;
+
+	xdr_be.put32(&outheader, sig_len);
+	bputs(&outheader, sig, sig_len);
+
+	return 0;
+}
+
 void cbfs_put_header(void *dest, const struct cbfs_header *header)
 {
 	struct buffer outheader;
+	unsigned char sig[CBFS_MAX_SIG_LENGTH];
+
+	memset(sig, 0, CBFS_MAX_SIG_LENGTH);
 
 	outheader.data = dest;
 	outheader.size = 0;
@@ -135,6 +179,8 @@ void cbfs_put_header(void *dest, const struct cbfs_header *header)
 	xdr_be.put32(&outheader, header->align);
 	xdr_be.put32(&outheader, header->offset);
 	xdr_be.put32(&outheader, header->architecture);
+	xdr_be.put32(&outheader, 0);
+	bputs(&outheader, sig, CBFS_MAX_SIG_LENGTH);
 }
 
 static void cbfs_decode_payload_segment(struct cbfs_payload_segment *output,
@@ -167,6 +213,8 @@ void cbfs_get_header(struct cbfs_header *header, const void *src)
 	header->align = xdr_be.get32(&outheader);
 	header->offset = xdr_be.get32(&outheader);
 	header->architecture = xdr_be.get32(&outheader);
+	header->signaturesize = xdr_be.get32(&outheader);
+	bgets(&outheader, header->signature, CBFS_MAX_SIG_LENGTH);
 }
 
 int cbfs_image_create(struct cbfs_image *image,
@@ -264,6 +312,7 @@ int cbfs_image_create(struct cbfs_image *image,
 		cbfs_len = header_offset;
 	cbfs_len -= entries_offset + align + entry_header_len;
 	cbfs_create_empty_entry(image, entry, cbfs_len, "");
+
 	LOG("Created CBFS image (capacity = %d bytes)\n", cbfs_len);
 	return 0;
 }
@@ -292,9 +341,19 @@ int cbfs_image_from_file(struct cbfs_image *image, const char *filename)
 	return 0;
 }
 
-int cbfs_image_write_file(struct cbfs_image *image, const char *filename)
+int cbfs_image_write_file(struct cbfs_image *image,
+						  const char *filename)
 {
 	assert(image && image->buffer.data);
+	return buffer_write_file(&image->buffer, filename);
+}
+
+int cbfs_image_sign_file(struct cbfs_image *image,
+						 const unsigned char *sk,
+						 const char *filename)
+{
+	assert(image && image->buffer.data);
+	cbfs_gen_signature(image, sk);
 	return buffer_write_file(&image->buffer, filename);
 }
 
@@ -789,7 +848,8 @@ struct cbfs_header *cbfs_find_header(char *data, size_t size)
 		if (ntohl(header->magic) !=(CBFS_HEADER_MAGIC))
 		    continue;
 		if (ntohl(header->version) != CBFS_HEADER_VERSION1 &&
-		    ntohl(header->version) != CBFS_HEADER_VERSION2) {
+		    ntohl(header->version) != CBFS_HEADER_VERSION2 &&
+		    ntohl(header->version) != CBFS_HEADER_VERSION3) {
 			// Probably not a real CBFS header?
 			continue;
 		}

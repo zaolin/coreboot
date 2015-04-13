@@ -1,0 +1,11 @@
+config INTEL_PLATFORM_LOCKDOWN
+	bool "Intel Platform Lockdown"
+	depends on SOUTHBRIDGE_INTEL_COMMON
+	default y
+	help
+	  Can set Intel Protected Regions, BIOS_CNTL and locks
+	  platform against unpriviledged flash attemps and restrict SMM access.
+
+source src/security/crypto/Kconfig
+source src/security/flash/Kconfig
+source src/security/platform/Kconfig

@@ -84,7 +84,11 @@
 #define CBFS_HEADER_MAGIC  0x4F524243
 #define CBFS_HEADER_VERSION1 0x31313131
 #define CBFS_HEADER_VERSION2 0x31313132
-#define CBFS_HEADER_VERSION  CBFS_HEADER_VERSION2
+#define CBFS_HEADER_VERSION3 0x31313133
+#define CBFS_HEADER_VERSION  CBFS_HEADER_VERSION3
+
+#define CBFS_MAX_SIG_LENGTH 128
+#define CBFS_PAD_LENGTH 2
 
 /** this is the master cbfs header - it need to be located somewhere available
     to bootblock (to load romstage).  Where it actually lives is up to coreboot.
@@ -99,7 +103,9 @@ struct cbfs_header {
 	uint32_t align;
 	uint32_t offset;
 	uint32_t architecture;
-	uint32_t pad[1];
+	uint32_t signaturesize;
+	uint8_t  signature[CBFS_MAX_SIG_LENGTH];
+	uint32_t pad[CBFS_PAD_LENGTH];
 } __attribute__((packed));
 
 /* "Unknown" refers to CBFS headers version 1,

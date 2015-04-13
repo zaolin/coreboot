@@ -29,6 +29,7 @@
 #include "cbfs.h"
 #include "cbfs_image.h"
 #include "fit.h"
+#include "crypto-utils.h"
 
 struct command {
 	const char *name;
@@ -40,6 +41,7 @@ static struct param {
 	char *cbfs_name;
 	char *name;
 	char *filename;
+	char *keypair;
 	char *bootblock;
 	char *ignore_section;
 	uint64_t u64val;
@@ -329,6 +331,61 @@ static int cbfs_remove(void)
 	return 0;
 }
 
+
+static int cbfs_sign(void) {
+	struct cbfs_image image;
+	struct buffer buffer;
+	struct cbkeys file;
+
+	if (!param.keypair) {
+		ERROR("You need to specify -k/--keypair.\n");
+		return 1;
+	}
+
+	if(read_cbkeys(param.keypair, &file) < 0) {
+		return -3;
+	}
+
+	if (cbfs_image_from_file(&image, param.cbfs_name) != 0) {
+		ERROR("Could not load ROM image '%s'.\n", param.cbfs_name);
+		return 1;
+	}
+
+	if (cbfs_get_entry(&image, "pubkey")) {
+		if (cbfs_remove_entry(&image, "pubkey") != 0) {
+			ERROR("Removing file '%s' failed.\n",
+			      param.name);
+			cbfs_image_delete(&image);
+			return 1;
+		}
+	}
+
+	if (buffer_create(&buffer, crypto_sign_PUBLICKEYBYTES, "Ed25519 public key") != 0) {
+		buffer_delete(&buffer);
+		cbfs_image_delete(&image);
+		return 1;
+	}
+
+	memcpy(buffer.data, file.pk, crypto_sign_PUBLICKEYBYTES);
+
+	if (cbfs_add_entry(&image, &buffer, "pubkey", CBFS_COMPONENT_RAW, param.baseaddress) != 0) {
+		ERROR("Failed to add '%s' into ROM image.\n", param.keypair);
+		buffer_delete(&buffer);
+		cbfs_image_delete(&image);
+		return 1;
+	}
+
+	if (cbfs_image_sign_file(&image, file.sk, param.cbfs_name) != 0) {
+		buffer_delete(&buffer);
+		cbfs_image_delete(&image);
+		return 1;
+	}
+
+	buffer_delete(&buffer);
+	cbfs_image_delete(&image);
+	return 0;
+}
+
 static int cbfs_create(void)
 {
 	struct cbfs_image image;
@@ -530,6 +587,7 @@ static const struct command commands[] = {
 	{"print", "vh?", cbfs_print},
 	{"extract", "n:f:vh?", cbfs_extract},
 	{"update-fit", "n:x:vh?", cbfs_update_fit},
+	{"sign", "k:vh?", cbfs_sign},
 };
 
 static struct option long_options[] = {
@@ -552,6 +610,7 @@ static struct option long_options[] = {
 	{"initrd",       required_argument, 0, 'I' },
 	{"cmdline",      required_argument, 0, 'C' },
 	{"ignore-sec",   required_argument, 0, 'S' },
+	{"keypair",      required_argument, 0, 'k' },
 	{"verbose",      no_argument,       0, 'v' },
 	{"help",         no_argument,       0, 'h' },
 	{NULL,           0,                 0,  0  }
@@ -592,6 +651,8 @@ static void usage(char *name)
 			"Extracts a raw payload from ROM\n"
 	     " update-fit -n MICROCODE_BLOB_NAME -x EMTPY_FIT_ENTRIES\n  "
 			"Updates the FIT table with microcode entries\n"
+		 " sign -n keypair file\n  "
+			"Signs the cbfs file with a ed 25519 keypair.\n"
 	     "\n"
 	     "ARCHes:\n"
 	     "  arm64, arm, mips, x86\n"
@@ -698,6 +759,8 @@ int main(int argc, char **argv)
 				break;
 			case 'f':
 				param.filename = optarg;
+			case 'k':
+				param.keypair = optarg;
 				break;
 			case 'i':
 				param.u64val = strtoull(optarg, NULL, 0);

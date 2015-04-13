@@ -1,0 +1,40 @@
+##
+## This file is part of the coreboot project.
+##
+## Copyright (C) 2015 Philipp Deppenwiese <philipp@deppenwiese.net>
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; version 2 of the License.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+##
+
+comment "Flash Protections"
+
+config ME_LOCK_PR
+	bool "Enable Protected Regions"
+	depends on INTEL_PLATFORM_LOCKDOWN
+	default n
+	help
+	  Attention coreboot can only be updated via external flasher
+	  after enabling this feature !!!
+
+	  If unsure, say N.
+
+config ME_LOCK_CNTL
+	bool "Enable BIOS_CNTL"
+	depends on INTEL_PLATFORM_LOCKDOWN
+	default n
+	help
+	  Attention coreboot can only be updated via external flasher
+	  after enabling this feature !!!
+
+	  If unsure, say N.

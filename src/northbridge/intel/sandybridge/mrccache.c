@@ -225,7 +225,7 @@ static void update_mrc_cache(void *unused)
 		     current->mrc_data_size + sizeof(*current), current);
 }
 
-BOOT_STATE_INIT_ENTRY(BS_WRITE_TABLES, BS_ON_ENTRY, update_mrc_cache, NULL);
+BOOT_STATE_INIT_ENTRY(BS_DEV_INIT_CHIPS, BS_ON_EXIT, update_mrc_cache, NULL);
 #endif
 
 struct mrc_data_container *find_current_mrc_cache(void)

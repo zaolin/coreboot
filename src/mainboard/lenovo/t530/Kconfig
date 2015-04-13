@@ -20,7 +20,6 @@ config BOARD_SPECIFIC_OPTIONS # dummy
 	select MAINBOARD_HAS_NATIVE_VGA_INIT
 	select MAINBOARD_HAS_NATIVE_VGA_INIT_TEXTMODECFG
 	select IVYBRIDGE_LVDS
-	select MAINBOARD_DO_NATIVE_VGA_INIT # default to native vga init
 	select ENABLE_VMX
 
 	# Workaround for EC/KBC IRQ1.
@@ -61,6 +60,10 @@ config DRAM_RESET_GATE_GPIO
 config VGA_BIOS_FILE
 	string
 	default "pci8086,0106.rom"
+
+config VGA_BIOS_ID
+        string
+        default "8086,0166"
 
 config MAINBOARD_PCI_SUBSYSTEM_VENDOR_ID
 	hex

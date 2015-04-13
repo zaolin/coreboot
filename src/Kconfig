@@ -774,6 +774,12 @@ config LINUX_INITRD
 
 endmenu
 
+menu "Security"
+
+source src/security/Kconfig
+
+endmenu
+
 menu "Debugging"
 
 # TODO: Better help text and detailed instructions.

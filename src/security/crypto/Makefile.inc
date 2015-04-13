@@ -1,0 +1,1 @@
+smm-$(CONFIG_ED25519_SHA512) += primitives.c hash.c eddsa.c

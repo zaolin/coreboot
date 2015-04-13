@@ -16,6 +16,8 @@ cbfsobj += LzmaEnc.o
 # linux as payload
 cbfsobj += linux_trampoline.o
 cbfsobj += cbfs-payload-linux.o
+cbfsobj += crypto.o
+cbfsobj += crypto-utils.o
 
 rmodobj += rmodtool.o
 rmodobj += rmodule.o
